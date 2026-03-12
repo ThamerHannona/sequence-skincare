@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sequence — Admin</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --font: Arial Narrow, Arial, Verdana, sans-serif;
+      --black: #111111;
+      --white: #ffffff;
+      --border: #e8e8e1;
+      --dim: #f2f2f2;
+      --success: #2d7a4f;
+      --error: #c0392b;
+    }
+
+    body {
+      font-family: var(--font);
+      font-size: 16px;
+      background: var(--dim);
+      color: var(--black);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #login-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--black);
+      padding: 24px;
+    }
+
+    .login-box { width: 100%; max-width: 400px; }
+
+    .login-logo {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--white);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .login-sub {
+      text-align: center;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 48px;
+    }
+
+    .login-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 40px;
+    }
+
+    .login-card h2 { font-size: 20px; font-weight: 400; color: var(--white); margin-bottom: 6px; }
+    .login-card p { font-size: 14px; color: rgba(255,255,255,0.4); margin-bottom: 32px; }
+
+    .field { margin-bottom: 20px; }
+    .field label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 8px;
+    }
+    .field input {
+      width: 100%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 13px 16px;
+      font-family: var(--font);
+      font-size: 15px;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .field input:focus { border-color: rgba(255,255,255,0.45); }
+
+    .btn-login {
+      width: 100%;
+      background: var(--white);
+      color: var(--black);
+      border: none;
+      border-radius: 30px;
+      padding: 14px;
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-login:hover { background: #e8e8e8; transform: translateY(-1px); }
+
+    .login-error {
+      display: none;
+      background: rgba(192,57,43,0.15);
+      border: 1px solid rgba(192,57,43,0.4);
+      border-radius: 6px;
+      color: #e88;
+      font-size: 13px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    #admin-screen { display: none; min-height: 100vh; }
+
+    .admin-topbar {
+      background: var(--black);
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .admin-topbar-logo { font-size: 17px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--white); }
+    .admin-topbar-right { display: flex; align-items: center; gap: 20px; }
+    .admin-badge {
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); border: 1px solid rgba(255,255,255,0.15);
+      padding: 4px 12px; border-radius: 20px;
+    }
+    .btn-logout {
+      background: transparent; border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.6); border-radius: 20px; padding: 6px 16px;
+      font-family: var(--font); font-size: 13px; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: rgba(255,255,255,0.5); color: var(--white); }
+
+    .admin-main { max-width: 1100px; margin: 0 auto; padding: 48px 40px; }
+
+    .admin-heading { margin-bottom: 40px; }
+    .admin-heading h1 { font-size: 30px; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .admin-heading p { font-size: 14px; color: #888; }
+
+    .preview-link-bar {
+      background: #f0f7f0; border: 1px solid #c8e0c8; border-radius: 8px;
+      padding: 14px 20px; margin-bottom: 32px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .preview-link-bar span { font-size: 13px; color: #4a7a4a; }
+    .preview-link-bar a { font-size: 13px; color: #2d6a2d; font-weight: 500; text-decoration: none; border-bottom: 1px solid #2d6a2d; }
+
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .slot-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+
+    .slot-header {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .slot-title { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+    .slot-filename { font-size: 12px; color: #aaa; font-family: monospace; }
+
+    .drop-zone {
+      aspect-ratio: 4/5;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 0.2s; position: relative; overflow: hidden;
+      background: #fafaf8;
+    }
+    .drop-zone:hover { background: #f5f4f0; }
+    .drop-zone.drag-over { background: #eef5ee; outline: 2px dashed #5a9e6f; }
+    .drop-zone.has-image .drop-placeholder { display: none; }
+
+    .drop-placeholder {
+      display: flex; flex-direction: column; align-items: center; gap: 12px; pointer-events: none;
+    }
+    .drop-icon {
+      width: 48px; height: 48px; border-radius: 50%; background: var(--dim);
+      display: flex; align-items: center; justify-content: center; font-size: 22px; color: #aaa;
+    }
+    .drop-label { font-size: 13px; color: #999; text-align: center; line-height: 1.5; }
+    .drop-label strong { display: block; color: var(--black); font-size: 14px; margin-bottom: 2px; }
+
+    .preview-img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; display: none;
+    }
+    .drop-zone.has-image .preview-img { display: block; }
+
+    .preview-overlay {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.45);
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px; color: var(--white); font-size: 14px; letter-spacing: 0.04em;
+    }
+    .drop-zone.has-image:hover .preview-overlay { display: flex; }
+
+    .file-input { display: none; }
+
+    .slot-footer {
+      padding: 14px 20px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; min-height: 56px;
+    }
+
+    .slot-status { font-size: 13px; color: #aaa; display: flex; align-items: center; gap: 8px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #ddd; flex-shrink: 0; }
+    .slot-status.ready .status-dot { background: #f0a500; }
+    .slot-status.uploading .status-dot { background: #5588ee; animation: blink 0.8s ease-in-out infinite; }
+    .slot-status.done .status-dot { background: var(--success); }
+    .slot-status.error .status-dot { background: var(--error); }
+
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .btn-upload-single {
+      background: var(--black); color: var(--white); border: none; border-radius: 20px;
+      padding: 8px 18px; font-family: var(--font); font-size: 13px; cursor: pointer;
+      transition: background 0.2s, opacity 0.2s; white-space: nowrap;
+    }
+    .btn-upload-single:hover { background: #333; }
+    .btn-upload-single:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .upload-progress { height: 3px; background: #eee; overflow: hidden; display: none; }
+    .upload-progress.visible { display: block; }
+    .progress-fill { height: 100%; background: var(--black); width: 0%; transition: width 0.4s ease; }
+
+    .bulk-bar {
+      background: var(--white); border: 1px solid var(--border); border-radius: 8px;
+      padding: 24px 28px; display: flex; align-items: center; justify-content: space-between;
+      gap: 24px; flex-wrap: wrap;
+    }
+    .bulk-bar-text h3 { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
+    .bulk-bar-text p { font-size: 13px; color: #888; }
+
+    .btn-upload-all {
+      background: var(--black); color: var(--white); border: none; border-radius: 30px;
+      padding: 14px 32px; font-family: var(--font); font-size: 15px; font-weight: 500;
+      letter-spacing: 0.04em; cursor: pointer; transition: background 0.2s, transform 0.15s; white-space: nowrap;
+    }
+    .btn-upload-all:hover { background: #333; transform: translateY(-1px); }
+    .btn-upload-all:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+    .settings-section {
+      margin-top: 48px; background: var(--white); border: 1px solid var(--border);
+      border-radius: 8px; overflow: hidden;
+    }
+    .settings-header {
+      padding: 20px 28px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .settings-header h3 { font-size: 14px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+    .settings-toggle { background: none; border: none; cursor: pointer; font-size: 18px; color: #aaa; transition: transform 0.2s; }
+    .settings-toggle.open { transform: rotate(180deg); }
+    .settings-body { display: none; padding: 28px; }
+    .settings-body.visible { display: block; }
+    .settings-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+    .settings-field label { display: block; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #999; margin-bottom: 8px; }
+    .settings-field input {
+      width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 11px 14px;
+      font-family: var(--font); font-size: 14px; color: var(--black); outline: none; transition: border-color 0.2s;
+    }
+    .settings-field input:focus { border-color: #aaa; }
+    .settings-note { font-size: 12px; color: #bbb; margin-top: 4px; }
+    .btn-save-settings {
+      background: var(--black); color: var(--white); border: none; border-radius: 20px;
+      padding: 10px 24px; font-family: var(--font); font-size: 13px; cursor: pointer;
+      transition: background 0.2s; margin-top: 8px;
+    }
+    .btn-save-settings:hover { background: #333; }
+
+    .toast {
+      position: fixed; bottom: 32px; right: 32px; background: var(--black); color: var(--white);
+      padding: 14px 22px; border-radius: 8px; font-size: 14px; display: none;
+      align-items: center; gap: 10px; z-index: 999;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25); max-width: 340px;
+    }
+    .toast.visible { display: flex; }
+    .toast.success { background: #1e4d35; }
+    .toast.error { background: #5c1a12; }
+
+    @media (max-width: 800px) {
+      .slots-grid { grid-template-columns: 1fr; }
+      .admin-main { padding: 32px 20px; }
+      .admin-topbar { padding: 0 20px; }
+      .settings-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Sequence</div>
+    <div class="login-sub">Admin Panel</div>
+    <div class="login-card">
+      <h2>Sign in</h2>
+      <p>Enter your admin password to continue.</p>
+      <div class="login-error" id="login-error">Incorrect password. Please try again.</div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="password-input" placeholder="Enter password" autocomplete="current-password" />
+      </div>
+      <button class="btn-login" onclick="handleLogin()">Sign In</button>
+    </div>
+  </div>
+</div>
+
+<div id="admin-screen">
+  <div class="admin-topbar">
+    <div class="admin-topbar-logo">Sequence</div>
+    <div class="admin-topbar-right">
+      <span class="admin-badge">Admin</span>
+      <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="admin-main">
+    <div class="admin-heading">
+      <h1>Image Manager</h1>
+      <p>Upload and replace product images directly to the live site.</p>
+    </div>
+
+    <div class="preview-link-bar">
+      <span>Live site</span>
+      <a href="https://thamerhannona.github.io/sequence-skincare/landing.html" target="_blank">
+        thamerhannona.github.io/sequence-skincare/landing.html
+      </a>
+    </div>
+
+    <div class="slots-grid">
+      <div class="slot-card">
+        <div class="slot-header">
+          <span class="slot-title">Step 01 — Daily Defense</span>
+          <span class="slot-filename">product-01.jpg</span>
+        </div>
+        <div class="drop-zone" id="drop-1" onclick="triggerFile(1)" ondragover="onDragOver(event,1)" ondragleave="onDragLeave(1)" ondrop="onDrop(event,1)">
+          <img class="preview-img" id="preview-1" src="" alt="" />
+          <div class="drop-placeholder">
+            <div class="drop-icon">+</div>
+            <div class="drop-label"><strong>Click or drag and drop</strong>JPG, PNG, WEBP</div>
+          </div>
+          <div class="preview-overlay">Replace image</div>
+        </div>
+        <input type="file" class="file-input" id="file-1" accept="image/*" onchange="onFileSelect(1,this)" />
+        <div class="slot-footer">
+          <div class="slot-status" id="status-1"><div class="status-dot"></div>No image selected</div>
+          <button class="btn-upload-single" id="btn-1" onclick="uploadSlot(1)" disabled>Upload</button>
+        </div>
+        <div class="upload-progress" id="progress-1"><div class="progress-fill" id="fill-1"></div></div>
+      </div>
+
+      <div class="slot-card">
+        <div class="slot-header">
+          <span class="slot-title">Step 02 — Deep Restore</span>
+          <span class="slot-filename">product-02.jpg</span>
+        </div>
+        <div class="drop-zone" id="drop-2" onclick="triggerFile(2)" ondragover="onDragOver(event,2)" ondragleave="onDragLeave(2)" ondrop="onDrop(event,2)">
+          <img class="preview-img" id="preview-2" src="" alt="" />
+          <div class="drop-placeholder">
+            <div class="drop-icon">+</div>
+            <div class="drop-label"><strong>Click or drag and drop</strong>JPG, PNG, WEBP</div>
+          </div>
+          <div class="preview-overlay">Replace image</div>
+        </div>
+        <input type="file" class="file-input" id="file-2" accept="image/*" onchange="onFileSelect(2,this)" />
+        <div class="slot-footer">
+          <div class="slot-status" id="status-2"><div class="status-dot"></div>No image selected</div>
+          <button class="btn-upload-single" id="btn-2" onclick="uploadSlot(2)" disabled>Upload</button>
+        </div>
+        <div class="upload-progress" id="progress-2"><div class="progress-fill" id="fill-2"></div></div>
+      </div>
+
+      <div class="slot-card">
+        <div class="slot-header">
+          <span class="slot-title">Step 03 — Night Reset</span>
+          <span class="slot-filename">product-03.jpg</span>
+        </div>
+        <div class="drop-zone" id="drop-3" onclick="triggerFile(3)" ondragover="onDragOver(event,3)" ondragleave="onDragLeave(3)" ondrop="onDrop(event,3)">
+          <img class="preview-img" id="preview-3" src="" alt="" />
+          <div class="drop-placeholder">
+            <div class="drop-icon">+</div>
+            <div class="drop-label"><strong>Click or drag and drop</strong>JPG, PNG, WEBP</div>
+          </div>
+          <div class="preview-overlay">Replace image</div>
+        </div>
+        <input type="file" class="file-input" id="file-3" accept="image/*" onchange="onFileSelect(3,this)" />
+        <div class="slot-footer">
+          <div class="slot-status" id="status-3"><div class="status-dot"></div>No image selected</div>
+          <button class="btn-upload-single" id="btn-3" onclick="uploadSlot(3)" disabled>Upload</button>
+        </div>
+        <div class="upload-progress" id="progress-3"><div class="progress-fill" id="fill-3"></div></div>
+      </div>
+    </div>
+
+    <div class="bulk-bar">
+      <div class="bulk-bar-text">
+        <h3>Upload all at once</h3>
+        <p>Publish all selected images to GitHub in one click.</p>
+      </div>
+      <button class="btn-upload-all" id="btn-upload-all" onclick="uploadAll()" disabled>Publish All Images</button>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-header">
+        <h3>GitHub Settings</h3>
+        <button class="settings-toggle" id="settings-toggle" onclick="toggleSettings()">&#x25BE;</button>
+      </div>
+      <div class="settings-body" id="settings-body">
+        <div class="settings-row">
+          <div class="settings-field">
+            <label>GitHub Token</label>
+            <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+            <div class="settings-note">Personal access token with repo write scope</div>
+          </div>
+          <div class="settings-field">
+            <label>Repository</label>
+            <input type="text" id="gh-repo" value="ThamerHannona/sequence-skincare" />
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-field">
+            <label>Branch</label>
+            <input type="text" id="gh-branch" value="main" />
+          </div>
+          <div class="settings-field">
+            <label>Images Folder</label>
+            <input type="text" id="gh-folder" value="images" />
+          </div>
+        </div>
+        <button class="btn-save-settings" onclick="saveSettings()">Save Settings</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ADMIN_PASSWORD = 'sequence2025';
+const SLOTS = {
+  1: { filename: 'product-01.jpg', file: null, sha: null },
+  2: { filename: 'product-02.jpg', file: null, sha: null },
+  3: { filename: 'product-03.jpg', file: null, sha: null }
+};
+
+function getSettings() {
+  return {
+    token:  localStorage.getItem('gh_token')  || '',
+    repo:   localStorage.getItem('gh_repo')   || 'ThamerHannona/sequence-skincare',
+    branch: localStorage.getItem('gh_branch') || 'main',
+    folder: localStorage.getItem('gh_folder') || 'images'
+  };
+}
+
+function loadSettings() {
+  const s = getSettings();
+  document.getElementById('gh-token').value  = s.token;
+  document.getElementById('gh-repo').value   = s.repo;
+  document.getElementById('gh-branch').value = s.branch;
+  document.getElementById('gh-folder').value = s.folder;
+}
+
+function saveSettings() {
+  localStorage.setItem('gh_token',  document.getElementById('gh-token').value.trim());
+  localStorage.setItem('gh_repo',   document.getElementById('gh-repo').value.trim());
+  localStorage.setItem('gh_branch', document.getElementById('gh-branch').value.trim());
+  localStorage.setItem('gh_folder', document.getElementById('gh-folder').value.trim());
+  showToast('Settings saved', 'success');
+}
+
+function toggleSettings() {
+  const body   = document.getElementById('settings-body');
+  const toggle = document.getElementById('settings-toggle');
+  const open   = body.classList.toggle('visible');
+  toggle.classList.toggle('open', open);
+}
+
+function handleLogin() {
+  const pw  = document.getElementById('password-input').value;
+  const err = document.getElementById('login-error');
+  if (pw === ADMIN_PASSWORD) {
+    err.style.display = 'none';
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = 'block';
+    loadSettings();
+    fetchAllSHAs();
+  } else {
+    err.style.display = 'block';
+    document.getElementById('password-input').value = '';
+    document.getElementById('password-input').focus();
+  }
+}
+
+function handleLogout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('admin-screen').style.display = 'none';
+  document.getElementById('password-input').value = '';
+}
+
+document.getElementById('password-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') handleLogin();
+});
+
+function triggerFile(n) { document.getElementById('file-' + n).click(); }
+
+function onFileSelect(n, input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  SLOTS[n].file = file;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('preview-' + n).src = e.target.result;
+    document.getElementById('drop-' + n).classList.add('has-image');
+  };
+  reader.readAsDataURL(file);
+  setStatus(n, 'ready', 'Ready — ' + file.name);
+  document.getElementById('btn-' + n).disabled = false;
+  updateBulkButton();
+}
+
+function onDragOver(e, n) {
+  e.preventDefault();
+  document.getElementById('drop-' + n).classList.add('drag-over');
+}
+
+function onDragLeave(n) {
+  document.getElementById('drop-' + n).classList.remove('drag-over');
+}
+
+function onDrop(e, n) {
+  e.preventDefault();
+  document.getElementById('drop-' + n).classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+  SLOTS[n].file = file;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    document.getElementById('preview-' + n).src = ev.target.result;
+    document.getElementById('drop-' + n).classList.add('has-image');
+  };
+  reader.readAsDataURL(file);
+  setStatus(n, 'ready', 'Ready — ' + file.name);
+  document.getElementById('btn-' + n).disabled = false;
+  updateBulkButton();
+}
+
+async function fetchAllSHAs() {
+  const s = getSettings();
+  if (!s.token) return;
+  for (const n of [1, 2, 3]) {
+    try {
+      const path = s.folder + '/' + SLOTS[n].filename;
+      const res = await fetch(
+        'https://api.github.com/repos/' + s.repo + '/contents/' + path + '?ref=' + s.branch,
+        { headers: { Authorization: 'token ' + s.token } }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        SLOTS[n].sha = data.sha;
+      }
+    } catch(err) {}
+  }
+}
+
+async function uploadSlot(n) {
+  const s = getSettings();
+  if (!s.token) {
+    showToast('Add your GitHub token in Settings first', 'error');
+    document.getElementById('settings-body').classList.add('visible');
+    document.getElementById('settings-toggle').classList.add('open');
+    return;
+  }
+  const slot = SLOTS[n];
+  if (!slot.file) return;
+
+  setStatus(n, 'uploading', 'Uploading...');
+  document.getElementById('btn-' + n).disabled = true;
+  showProgress(n, 30);
+
+  try {
+    const base64 = await fileToBase64(slot.file);
+    showProgress(n, 60);
+    const path = s.folder + '/' + slot.filename;
+    const body = {
+      message: 'Update ' + slot.filename + ' via admin panel',
+      content: base64,
+      branch: s.branch
+    };
+    if (slot.sha) body.sha = slot.sha;
+
+    const res = await fetch(
+      'https://api.github.com/repos/' + s.repo + '/contents/' + path,
+      {
+        method: 'PUT',
+        headers: { Authorization: 'token ' + s.token, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    showProgress(n, 100);
+
+    if (res.ok) {
+      const data = await res.json();
+      SLOTS[n].sha = data.content.sha;
+      setStatus(n, 'done', 'Uploaded successfully');
+      showToast('product-0' + n + '.jpg published live', 'success');
+    } else {
+      const err = await res.json();
+      setStatus(n, 'error', 'Failed: ' + (err.message || res.status));
+      showToast('Upload failed — check token and repo settings', 'error');
+      document.getElementById('btn-' + n).disabled = false;
+    }
+  } catch(err) {
+    setStatus(n, 'error', 'Error: ' + err.message);
+    showToast('Upload error: ' + err.message, 'error');
+    document.getElementById('btn-' + n).disabled = false;
+  }
+  setTimeout(function() { hideProgress(n); }, 700);
+  updateBulkButton();
+}
+
+async function uploadAll() {
+  const ready = [1,2,3].filter(function(n) { return SLOTS[n].file; });
+  if (!ready.length) return;
+  const btn = document.getElementById('btn-upload-all');
+  btn.disabled = true;
+  btn.textContent = 'Publishing...';
+  for (const n of ready) { await uploadSlot(n); }
+  btn.textContent = 'Publish All Images';
+  updateBulkButton();
+}
+
+function fileToBase64(file) {
+  return new Promise(function(resolve, reject) {
+    const reader = new FileReader();
+    reader.onload  = function() { resolve(reader.result.split(',')[1]); };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function setStatus(n, type, text) {
+  const el = document.getElementById('status-' + n);
+  el.className = 'slot-status ' + type;
+  el.innerHTML = '<div class="status-dot"></div>' + text;
+}
+
+function showProgress(n, pct) {
+  document.getElementById('progress-' + n).classList.add('visible');
+  document.getElementById('fill-' + n).style.width = pct + '%';
+}
+
+function hideProgress(n) {
+  document.getElementById('progress-' + n).classList.remove('visible');
+  document.getElementById('fill-' + n).style.width = '0%';
+}
+
+function updateBulkButton() {
+  const any = [1,2,3].some(function(n) { return SLOTS[n].file; });
+  document.getElementById('btn-upload-all').disabled = !any;
+}
+
+var toastTimer;
+function showToast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast visible ' + (type || '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { el.classList.remove('visible'); }, 4000);
+}
+</script>
+</body>
+</html>
