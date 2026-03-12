@@ -42,10 +42,8 @@ nav{position:fixed;top:0;left:0;width:100%;z-index:1000;padding:0 48px;display:f
 .hero-visual{position:absolute;right:0;top:0;bottom:0;width:52%;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .hero-products{display:flex;gap:40px;align-items:flex-end;padding:80px 60px}
 .hero-product{text-align:center}
-.product-bottle{width:120px;height:220px;background:linear-gradient(180deg,#1a1a1a 0%,#0d0d0d 100%);border:1px solid rgba(255,255,255,.1);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
-.product-bottle::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.05) 0%,transparent 50%);pointer-events:none}
-.bottle-num{font-size:28px;font-weight:700;letter-spacing:-.02em;color:#fff}
-.bottle-name{font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#666;line-height:1.5;text-align:center;padding:0 12px}
+.product-bottle{width:120px;height:220px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.product-bottle img{width:100%;height:100%;object-fit:contain;display:block}
 .product-bottle.tall{height:270px;width:100px}
 .hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;color:#444}
 .hero-scroll span{font-size:9px;letter-spacing:.25em;text-transform:uppercase}
@@ -79,11 +77,9 @@ section{padding:120px 48px}
 .product-card:hover::before{opacity:1}
 .card-num{font-size:72px;font-weight:700;letter-spacing:-.04em;color:#1c1c1c;line-height:1;margin-bottom:32px;transition:color .3s}
 .product-card:hover .card-num{color:#222}
-.card-bottle{width:90px;height:160px;background:linear-gradient(180deg,#222 0%,#111 100%);border:1px solid rgba(255,255,255,.12);margin:0 auto 40px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;transition:transform .3s}
+.card-bottle{width:140px;height:220px;margin:0 auto 40px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;transition:transform .3s}
 .product-card:hover .card-bottle{transform:translateY(-6px)}
-.card-bottle::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.07) 0%,transparent 60%)}
-.card-bottle .b-num{font-size:18px;font-weight:700;color:#fff}
-.card-bottle .b-label{font-size:7px;letter-spacing:.15em;text-transform:uppercase;color:#555;text-align:center;padding:0 8px}
+.card-bottle img{width:100%;height:100%;object-fit:contain;display:block}
 .card-tag{display:inline-block;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#3A66A7;border:1px solid rgba(58,102,167,.3);padding:5px 12px;margin-bottom:20px}
 .card-name{font-size:20px;font-weight:700;letter-spacing:-.01em;margin-bottom:10px}
 .card-subtitle{font-size:13px;color:#666;letter-spacing:.05em;text-transform:uppercase;margin-bottom:20px;font-weight:300}
@@ -106,8 +102,8 @@ section{padding:120px 48px}
 .ritual-bottles{display:flex;flex-direction:column;gap:20px}
 .ritual-bottle{display:flex;align-items:center;gap:24px;padding:24px;border:1px solid #1a1a1a;background:#0d0d0d;transition:all .3s}
 .ritual-bottle:hover{border-color:rgba(58,102,167,.3);background:#111}
-.rb-product{width:50px;height:90px;background:linear-gradient(180deg,#222 0%,#111 100%);border:1px solid rgba(255,255,255,.1);flex-shrink:0;position:relative}
-.rb-product::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.07) 0%,transparent 60%)}
+.rb-product{width:60px;height:100px;flex-shrink:0;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.rb-product img{width:100%;height:100%;object-fit:contain;display:block}
 .rb-info h4{font-size:13px;font-weight:600;letter-spacing:.05em;margin-bottom:4px}
 .rb-info p{font-size:12px;color:#666;font-weight:300}
 .rb-time{margin-left:auto;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#444}
@@ -145,14 +141,12 @@ section{padding:120px 48px}
 .bundle-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
 .bundle-visual{display:flex;gap:16px;justify-content:center}
 .bundle-bottle{display:flex;flex-direction:column;align-items:center;gap:16px}
-.bb-pack{background:linear-gradient(180deg,#1a1a1a 0%,#0d0d0d 100%);border:1px solid rgba(255,255,255,.12);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;transition:transform .3s}
-.bb-pack::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.06) 0%,transparent 60%)}
+.bb-pack{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;transition:transform .3s}
 .bb-pack.lg{width:100px;height:200px}
 .bb-pack.md{width:90px;height:170px}
 .bb-pack.sm{width:80px;height:145px}
 .bundle-bottle:hover .bb-pack{transform:translateY(-8px)}
-.bb-num{font-size:22px;font-weight:700;color:#fff}
-.bb-name{font-size:7px;letter-spacing:.15em;text-transform:uppercase;color:#555;text-align:center;padding:0 10px}
+.bb-pack img{width:100%;height:100%;object-fit:contain;display:block}
 .bb-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#666;margin-top:4px}
 .bundle-info .section-label{color:#3A66A7}
 .bundle-price{display:flex;align-items:baseline;gap:16px;margin:36px 0}
@@ -282,21 +276,18 @@ footer{background:#000;border-top:1px solid #111;padding:80px 48px 40px}
   <div class="hero-visual">
     <div class="hero-products">
       <div class="hero-product">
-        <div class="product-bottle" style="height:200px;width:100px">
-          <div class="bottle-num">[01]</div>
-          <div class="bottle-name">Daily<br>Defense</div>
+        <div class="product-bottle" style="height:200px;width:120px">
+          <img src="images/product-01.jpg" alt="[01] Daily Defense">
         </div>
       </div>
       <div class="hero-product">
         <div class="product-bottle tall">
-          <div class="bottle-num">[02]</div>
-          <div class="bottle-name">Deep<br>Restore</div>
+          <img src="images/product-02.jpg" alt="[02] Deep Restore">
         </div>
       </div>
       <div class="hero-product">
-        <div class="product-bottle" style="height:180px;width:95px">
-          <div class="bottle-num">[03]</div>
-          <div class="bottle-name">Night<br>Reset</div>
+        <div class="product-bottle" style="height:180px;width:110px">
+          <img src="images/product-03.jpg" alt="[03] Night Reset">
         </div>
       </div>
     </div>
@@ -359,8 +350,7 @@ footer{background:#000;border-top:1px solid #111;padding:80px 48px 40px}
     <div class="product-card reveal">
       <div class="card-num">01</div>
       <div class="card-bottle">
-        <div class="b-num">[01]</div>
-        <div class="b-label">Daily Defense</div>
+        <img src="images/product-01.jpg" alt="[01] Daily Defense">
       </div>
       <div class="card-tag">A.M. Use</div>
       <div class="card-name">Daily Defense</div>
@@ -372,9 +362,8 @@ footer{background:#000;border-top:1px solid #111;padding:80px 48px 40px}
     </div>
     <div class="product-card reveal" style="background:#0f0f0f">
       <div class="card-num">02</div>
-      <div class="card-bottle" style="height:180px">
-        <div class="b-num">[02]</div>
-        <div class="b-label">Deep Restore</div>
+      <div class="card-bottle" style="height:220px">
+        <img src="images/product-02.jpg" alt="[02] Deep Restore">
       </div>
       <div class="card-tag">A.M. / P.M.</div>
       <div class="card-name">Deep Restore</div>
@@ -387,8 +376,7 @@ footer{background:#000;border-top:1px solid #111;padding:80px 48px 40px}
     <div class="product-card reveal">
       <div class="card-num">03</div>
       <div class="card-bottle">
-        <div class="b-num">[03]</div>
-        <div class="b-label">Night Reset</div>
+        <img src="images/product-03.jpg" alt="[03] Night Reset">
       </div>
       <div class="card-tag">P.M. Use</div>
       <div class="card-name">Night Reset</div>
@@ -442,7 +430,7 @@ footer{background:#000;border-top:1px solid #111;padding:80px 48px 40px}
     <div class="ritual-visual reveal">
       <div class="ritual-bottles">
         <div class="ritual-bottle">
-          <div class="rb-product"></div>
+          <div class="rb-product"><img src="images/product-01.jpg" alt="[01] Daily Defense"></div>
           <div class="rb-info">
             <h4>[01] Daily Defense</h4>
             <p>Morning moisturizer &amp; SPF</p>
@@ -450,7 +438,7 @@ footer{background:#000;border-top:1px solid #111;padding:80px 48px 40px}
           <div class="rb-time">AM</div>
         </div>
         <div class="ritual-bottle">
-          <div class="rb-product"></div>
+          <div class="rb-product"><img src="images/product-02.jpg" alt="[02] Deep Restore"></div>
           <div class="rb-info">
             <h4>[02] Deep Restore</h4>
             <p>Hydration serum</p>
@@ -458,7 +446,7 @@ footer{background:#000;border-top:1px solid #111;padding:80px 48px 40px}
           <div class="rb-time">AM / PM</div>
         </div>
         <div class="ritual-bottle">
-          <div class="rb-product"></div>
+          <div class="rb-product"><img src="images/product-03.jpg" alt="[03] Night Reset"></div>
           <div class="rb-info">
             <h4>[03] Night Reset</h4>
             <p>Overnight repair cream</p>
@@ -548,15 +536,15 @@ footer{background:#000;border-top:1px solid #111;padding:80px 48px 40px}
   <div class="bundle-inner">
     <div class="bundle-visual reveal">
       <div class="bundle-bottle">
-        <div class="bb-pack lg"><div class="bb-num">[01]</div><div class="bb-name">Daily Defense</div></div>
+        <div class="bb-pack lg"><img src="images/product-01.jpg" alt="[01] Daily Defense"></div>
         <div class="bb-label">AM</div>
       </div>
       <div class="bundle-bottle" style="margin-top:30px">
-        <div class="bb-pack md"><div class="bb-num">[02]</div><div class="bb-name">Deep Restore</div></div>
+        <div class="bb-pack md"><img src="images/product-02.jpg" alt="[02] Deep Restore"></div>
         <div class="bb-label">AM / PM</div>
       </div>
       <div class="bundle-bottle">
-        <div class="bb-pack sm"><div class="bb-num">[03]</div><div class="bb-name">Night Reset</div></div>
+        <div class="bb-pack sm"><img src="images/product-03.jpg" alt="[03] Night Reset"></div>
         <div class="bb-label">PM</div>
       </div>
     </div>
