@@ -620,13 +620,20 @@ async function uploadSlot(n) {
       showToast('product-0' + n + '.jpg published live', 'success');
     } else {
       const err = await res.json();
-      setStatus(n, 'error', 'Failed: ' + (err.message || res.status));
-      showToast('Upload failed — check token and repo settings', 'error');
+      const code = res.status;
+      let hint = '';
+      if (code === 401) hint = '401 Unauthorized — token is invalid or expired. Generate a new one.';
+      else if (code === 403) hint = '403 Forbidden — token needs repo write permission. Regenerate with repo scope.';
+      else if (code === 404) hint = '404 Not Found — check repo name and folder in Settings.';
+      else if (code === 422) hint = '422 SHA mismatch — reload the page and try again.';
+      else hint = code + ' — ' + (err.message || 'Unknown error');
+      setStatus(n, 'error', hint);
+      showToast(hint, 'error');
       document.getElementById('btn-' + n).disabled = false;
     }
   } catch(err) {
-    setStatus(n, 'error', 'Error: ' + err.message);
-    showToast('Upload error: ' + err.message, 'error');
+    setStatus(n, 'error', 'Network error: ' + err.message);
+    showToast('Network error: ' + err.message, 'error');
     document.getElementById('btn-' + n).disabled = false;
   }
   setTimeout(function() { hideProgress(n); }, 700);
